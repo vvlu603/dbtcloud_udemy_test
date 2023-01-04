@@ -1,0 +1,106 @@
+version: 2
+
+metrics: 
+  - name: count_listings
+    label: Count of listings 
+    model: ref('dim_listings_cleansed')
+    description: A count of listings 
+    calculation_method: count
+    expression: listing_id
+    timestamp: created_at
+    time_grains: [day, week, month, all_time]
+    dimensions: 
+      - room_type
+
+  - name: rolling_count_listings 
+    label: Rolling Count of Listings Created 
+    model: ref('dim_listings_cleansed') 
+    description: The 7-day rolling count of listings created 
+    calculation_method: count_distinct 
+    expression: listing_id 
+    timestamp: created_at 
+    time_grains: [day, week, month] 
+    dimensions: 
+      - room_type 
+    window: 
+      count: 7 
+      period: day 
+
+
+
+  - name: count_listings_with_hosts 
+    label: Count of listings with host information 
+    model: ref('dim_listings_w_hosts') 
+    description: A count of listings, but enriched with host information based on listing_id join 
+    calculation_method: count 
+    expression: listing_id 
+    timestamp: created_at 
+    time_grains: [day, week, month, all_time] 
+    dimensions: 
+      - room_type 
+      - host_is_superhost
+
+  - name: count_listings_superhosts 
+    label: Count of listings by superhosts 
+    model: ref('dim_listings_w_hosts') 
+    description: Count of listings, but by current superhosts only 
+    calculation_method: count 
+    expression: listing_id 
+    timestamp: created_at 
+    time_grains: [day, week, month, all_time] 
+    dimensions: 
+      - room_type 
+    filters: 
+      - field: host_is_superhost 
+        operator: '='
+        value: "'t'"
+
+  - name: count_total_reviews_by_listing 
+    label: Total count of reviews by listing_id 
+    model: ref('fct_reviews') 
+    description: Total count of reviews by listing_id 
+    calculation_method: count 
+    expression: review_id
+    timestamp: review_date 
+    time_grains: [day, week, month, all_time] 
+    dimensions: 
+      - listing_id 
+      - review_sentiment 
+
+  - name: count_positive_reviews_by_listing 
+    label: Total count of positive reviews by listing_id 
+    model: ref('fct_reviews')
+    description: Total count of positive reviews by listing_id 
+    calculation_method: count
+    expression: review_id
+    timestamp: review_date 
+    time_grains: [day, week, month, all_time] 
+    dimensions: 
+      - listing_id 
+    filters: 
+      - field: review_sentiment 
+        operator: '='
+        value: "'positive'"
+
+  - name: count_negative_reviews_by_listing 
+    label: Total count of negative reviews by listing_id 
+    model: ref('fct_reviews')
+    description: Total count of negative reviews by listing_id 
+    calculation_method: count
+    expression: review_id
+    timestamp: review_date 
+    time_grains: [day, week, month, all_time] 
+    dimensions: 
+      - listing_id 
+    filters: 
+      - field: review_sentiment 
+        operator: '='
+        value: "'negative'"
+
+  - name: ratio_reviews_positive_to_total_daily 
+    label: ratio of positive to total reviews 
+    description: Ratio of positive to total reviews on a daily basis 
+    calculation_method: derived 
+    expression: "{{metric('count_positive_reviews_by_listing')}} / {{metric('count_total_reviews_by_listing')}}"
+    timestamp: review_date
+    time_grains: [day, week, month, all_time]
