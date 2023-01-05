@@ -175,3 +175,29 @@ metrics:
     dimensions: 
       - room_type 
       - host_is_superhost 
+
+  - name: total_revenue
+    model: ref('dim_listings_w_hosts')
+    label: total revenue
+    timestamp: created_at
+    time_grains: [day, week, month, quarter, year]
+    calculation_method: sum
+    expression: "price*minimum_nights"
+    dimensions:
+      - host_id
+      - listing_id 
+      - host_is_superhost 
+      - room_type
+
+  - name: average_revenue
+    model: ref('dim_listings_w_hosts')
+    label: average revenue
+    timestamp: created_at
+    time_grains: [day, week, month, quarter, year]
+    calculation_method: average
+    expression: "price*minimum_nights"
+    dimensions:
+      - host_id
+      - listing_id 
+      - host_is_superhost 
+      - room_type
