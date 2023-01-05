@@ -178,6 +178,7 @@ metrics:
 
   - name: total_revenue
     model: ref('dim_listings_w_hosts')
+    description: The total revenue (price x minimum nights) on a (grain) basis 
     label: total revenue
     timestamp: created_at
     time_grains: [day, week, month, quarter, year]
@@ -191,6 +192,7 @@ metrics:
 
   - name: average_revenue
     model: ref('dim_listings_w_hosts')
+    description: The average revenue (price x minimum nights) on a (grain) basis 
     label: average revenue
     timestamp: created_at
     time_grains: [day, week, month, quarter, year]
