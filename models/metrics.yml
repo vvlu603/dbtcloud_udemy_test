@@ -120,7 +120,7 @@ metrics:
     label: minimum price of listings 
     model: ref('dim_listings_w_hosts')
     description: The minimum price of listings on a (grain) basis 
-    calculation_method: minimum 
+    calculation_method: min 
     expression: price 
     timestamp: created_at 
     time_grains: [day, week, month] 
