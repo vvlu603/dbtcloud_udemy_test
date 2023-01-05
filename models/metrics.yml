@@ -27,7 +27,6 @@ metrics:
       period: day 
 
 
-
   - name: count_listings_with_hosts 
     label: Count of listings with host information 
     model: ref('dim_listings_w_hosts') 
@@ -104,3 +103,75 @@ metrics:
     expression: "{{metric('count_positive_reviews_by_listing')}} / {{metric('count_total_reviews_by_listing')}}"
     timestamp: review_date
     time_grains: [day, week, month, all_time]
+
+  - name: avg_price_of_listings 
+    label: average price of listings 
+    model: ref('dim_listings_w_hosts')
+    description: The average price of listings on a (grain) basis 
+    calculation_method: average 
+    expression: price 
+    timestamp: created_at 
+    time_grains: [day, week, month]
+    dimensions: 
+      - room_type 
+      - host_is_superhost 
+
+  - name: min_price_listings 
+    label: minimum price of listings 
+    model: ref('dim_listings_w_hosts')
+    description: The minimum price of listings on a (grain) basis 
+    calculation_method: minimum 
+    expression: price 
+    timestamp: created_at 
+    time_grains: [day, week, month] 
+    dimensions: 
+      - room_type 
+      - host_is_superhost 
+
+  - name: max_price_listings 
+    label: maximum price of listings 
+    model: ref('dim_listings_w_hosts')
+    description: The maximum price of listings on a (grain) basis 
+    calculation_method: max
+    expression: price 
+    timestamp: created_at 
+    time_grains: [day, week, month] 
+    dimensions: 
+      - room_type 
+      - host_is_superhost 
+
+  - name: avg_nights_of_listings 
+    label: average nights of listings 
+    model: ref('dim_listings_w_hosts')
+    description: The average minimum nights requirements of listings on a (grain) basis 
+    calculation_method: average 
+    expression:  minimum_nights
+    timestamp: created_at 
+    time_grains: [day, week, month] 
+    dimensions: 
+      - room_type 
+      - host_is_superhost 
+
+  - name: min_nights_of_listings 
+    label: minimum nights of listings 
+    model: ref('dim_listings_w_hosts')
+    description: The lowest minimum nights requirements of listings on a (grain) basis 
+    calculation_method: min
+    expression:  minimum_nights
+    timestamp: created_at 
+    time_grains: [day, week, month] 
+    dimensions: 
+      - room_type 
+      - host_is_superhost 
+    
+  - name: max_nights_of_listings 
+    label: maximum nights of listings 
+    model: ref('dim_listings_w_hosts')
+    description: The lowest maximum nights requirements of listings on a (grain) basis 
+    calculation_method: max
+    expression:  minimum_nights
+    timestamp: created_at 
+    time_grains: [day, week, month] 
+    dimensions: 
+      - room_type 
+      - host_is_superhost 
